@@ -70,7 +70,7 @@ public class MyReleaseListRecyclerViewAdapter extends RecyclerView.Adapter<MyRel
         ImageView imageView = (ImageView) view.getViewById(R.id.imageview);
         TextView episode_number = (TextView) view.getViewById(R.id.episode_number);
         TextView name = (TextView) view.getViewById(R.id.name);
-        String posterURL = release.getAnime().getPosterURL();
+        String posterURL = release.getAnime().getPoster();
 
         name.setText(release.getAnime().getTitle());
         episode_number.setText("" + release.getEpisode());

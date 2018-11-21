@@ -1,117 +1,66 @@
+
 package com.example.android.animepal;
 
-import android.app.Activity;
-import android.util.Log;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Anime {
-    private final String posterAPI = "https://cdn.masterani.me/poster/1/";
-    public enum Age {
-        NONE("None"), G("G - All Ages"), PG("PG - Children"), PG13("PG-13 - Teens 13 or older"), R("R - 17+ (violence & profanity)");
 
-        private String age;
-
-        private static final Map<String, Age> lookup = new HashMap<String, Age>();
-
-        static {
-            for (Age a : Age.values()){
-                lookup.put(a.age(), a);
-            }
-        }
-
-        Age(String age) {
-            this.age = age;
-        }
-        public String age(){
-            return age;
-        }
-
-        public static Age get(String age) {
-            return lookup.get(age);
-        }
-    }
-    private Activity activity;
-    private int id;
+    @SerializedName("id")
+    @Expose
+    private Integer id;
+    @SerializedName("title")
+    @Expose
     private String title;
+    @SerializedName("slug")
+    @Expose
     private String slug;
-    private int duration;
-    private Age age;
-    private String posterURL;
-    private String wallpaperURL;
+    @SerializedName("duration")
+    @Expose
+    private Integer duration;
+    @SerializedName("age")
+    @Expose
+    private String age;
+    @SerializedName("poster")
+    @Expose
+    private String poster;
+    @SerializedName("wallpaper")
+    @Expose
+    private Object wallpaper;
 
-    public Anime(Activity activity,
-                 int id,
-                 String title,
-                 String slug,
-                 int duration,
-                 Anime.Age age,
-                 String posterURL,
-                 String wallpaperURL) {
-        this.activity = activity;
+    /**
+     * No args constructor for use in serialization
+     * 
+     */
+    public Anime() {
+    }
+
+    /**
+     * 
+     * @param id
+     * @param duration
+     * @param title
+     * @param wallpaper
+     * @param age
+     * @param poster
+     * @param slug
+     */
+    public Anime(Integer id, String title, String slug, Integer duration, String age, String poster, Object wallpaper) {
+        super();
         this.id = id;
         this.title = title;
         this.slug = slug;
         this.duration = duration;
         this.age = age;
-        this.posterURL = posterURL;
-        this.wallpaperURL = wallpaperURL;
+        this.poster = poster;
+        this.wallpaper = wallpaper;
     }
 
-    public Anime(JSONObject jsonObject){
-        try {
-            this.id = jsonObject.getInt("id");
-        }
-        catch (JSONException e){
-            Log.e("Anime", "error getting id");
-        }
-
-        try {
-            this.title = jsonObject.getString("title");
-        }
-        catch (JSONException e){
-            Log.e("Anime", "error getting title");
-        }
-
-        try {
-            this.slug = jsonObject.getString("slug");
-        }
-        catch (JSONException e){
-            Log.e("Anime", "error getting slug");
-        }
-
-        this.duration = jsonObject.optInt("duration");
-
-        try {
-            this.age = Age.get(jsonObject.getString("age"));
-        }
-        catch (JSONException e){
-            Log.e("Anime", "error getting age");
-        }
-
-        try {
-            this.posterURL = jsonObject.getString("poster");
-//            Glide.with(activity).load(posterAPI + posterURL).apply(RequestOptions.noTransformation());
-        }
-        catch (JSONException e){
-            Log.e("Anime", "error getting poster");
-        }
-
-        this.wallpaperURL = jsonObject.optString("wallpaper");
-    }
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -131,35 +80,36 @@ public class Anime {
         this.slug = slug;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
-    public Anime.Age getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(Anime.Age age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
-    public String getPosterURL() {
-        return posterURL;
+    public String getPoster() {
+        return poster;
     }
 
-    public void setPosterURL(String posterURL) {
-        this.posterURL = posterURL;
+    public void setPoster(String poster) {
+        this.poster = poster;
     }
 
-    public String getWallpaperURL() {
-        return wallpaperURL;
+    public Object getWallpaper() {
+        return wallpaper;
     }
 
-    public void setWallpaperURL(String wallpaperURL) {
-        this.wallpaperURL = wallpaperURL;
+    public void setWallpaper(Object wallpaper) {
+        this.wallpaper = wallpaper;
     }
+
 }

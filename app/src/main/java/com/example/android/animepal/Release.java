@@ -1,37 +1,39 @@
+
 package com.example.android.animepal;
 
-import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Release {
+
+    @SerializedName("anime")
+    @Expose
     private Anime anime;
-    private int episode;
-    private Date created_at;
+    @SerializedName("episode")
+    @Expose
+    private String episode;
+    @SerializedName("created_at")
+    @Expose
+    private String createdAt;
 
-    public Release(Anime anime, int episode, String created_at_string){
-        this.anime = anime;
-        this.episode = episode;
-
+    /**
+     * No args constructor for use in serialization
+     * 
+     */
+    public Release() {
     }
 
-    public Release(JSONObject jsonObject) throws JSONException{
-        this.anime = new Anime(jsonObject.getJSONObject("anime"));
-        this.episode = jsonObject.getInt("episode");
-        try {
-            created_at =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).parse(jsonObject.getString("created_at"));
-        }
-        catch (ParseException e){
-            Log.e("Release", "Error Parsing Date");
-        }
+    /**
+     * 
+     * @param episode
+     * @param createdAt
+     * @param anime
+     */
+    public Release(Anime anime, String episode, String createdAt) {
+        super();
+        this.anime = anime;
+        this.episode = episode;
+        this.createdAt = createdAt;
     }
 
     public Anime getAnime() {
@@ -42,30 +44,20 @@ public class Release {
         this.anime = anime;
     }
 
-    public int getEpisode() {
+    public String getEpisode() {
         return episode;
     }
 
-    public void setEpisode(int episode) {
+    public void setEpisode(String episode) {
         this.episode = episode;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public static ArrayList<Release> parseResponse(String response) throws JSONException{
-//        JSONArray jsonArray = new JSONArray(response);
-        ArrayList<Release> releases = new ArrayList<>();
-//        Release release;
-        JSONArray jsonArray = new JSONArray(response);
-        for (int i=0; i<jsonArray.length(); i++) {
-            releases.add(new Release(jsonArray.getJSONObject(i)));
-        }
-        return releases;
-    }
 }

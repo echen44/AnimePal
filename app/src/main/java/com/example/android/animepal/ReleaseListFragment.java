@@ -89,7 +89,7 @@ public class ReleaseListFragment extends Fragment implements ReleasesListener{
         final Request request = new Request.Builder().url(releasesURL).build();
         JSONArray jsonArray;
         client = new OkHttpClient();
-        repository = new ReleasesRepository(client);
+        repository = new ReleasesRepository(client, this);
         repository.getReleases(this);
 
 //        try {
@@ -154,27 +154,27 @@ public class ReleaseListFragment extends Fragment implements ReleasesListener{
         void onListFragmentInteraction(DummyItem item);
     }
 
-    private void update(String string){
-        try{
-            Log.e(TAG, string);
-            releases = Release.parseResponse(string);
-        }
-        catch (JSONException e){
-            Log.e(TAG, "error update");
-        }
-        adapter = new MyReleaseListRecyclerViewAdapter(releases, this);
-
-
-//        view.setAdapter(postersAdapter);
-//        textView.setText(releases.get(5).getAnime().getTitle());
-//        Glide.with(this).load(new String(posterURL).concat(releases.get(2).getAnime().getPosterURL())).apply(RequestOptions.noTransformation()).into(view);
-
-    }
+//    private void update(String string){
+//        try{
+//            Log.e(TAG, string);
+//            releases = Release.parseResponse(string);
+//        }
+//        catch (JSONException e){
+//            Log.e(TAG, "error update");
+//        }
+//        adapter = new MyReleaseListRecyclerViewAdapter(releases, this);
+//
+//
+////        view.setAdapter(postersAdapter);
+////        textView.setText(releases.get(5).getAnime().getTitle());
+////        Glide.with(this).load(new String(posterURL).concat(releases.get(2).getAnime().getPosterURL())).apply(RequestOptions.noTransformation()).into(view);
+//
+//    }
 
     @Override
     public void callback(List<Release> releases) {
         this.releases = (ArrayList<Release>) releases;
-
+        adapter = new MyReleaseListRecyclerViewAdapter(this.releases, this);
 
         RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);

@@ -100,26 +100,26 @@ public class MainActivity extends AppCompatActivity implements ReleaseListFragme
 //        }
     }
 
-    private void update(String string){
-        try{
-            releases = Release.parseResponse(string);
-        }
-        catch (JSONException e){
-            Log.e("MainActivity", "error update");
-        }
-        postersAdapter = new PostersAdapter(releases, this);
-
-//        ListPreloader.PreloadSizeProvider sizeProvider = new ViewPreloadSizeProvider();
-//        ListPreloader.PreloadModelProvider modelProvider = new AnimePreloadModelProvider();
-//        RecyclerViewPreloader<Release> preloader = new RecyclerViewPreloader<Release>(GlideApp.with(this), modelProvider, sizeProvider, 6);
-//        view.addOnScrollListener(preloader);
-
-
-        view.setAdapter(postersAdapter);
-//        textView.setText(releases.get(5).getAnime().getTitle());
-//        Glide.with(this).load(new String(posterURL).concat(releases.get(2).getAnime().getPosterURL())).apply(RequestOptions.noTransformation()).into(view);
-
-    }
+//    private void update(String string){
+//        try{
+//            releases = Release.parseResponse(string);
+//        }
+//        catch (JSONException e){
+//            Log.e("MainActivity", "error update");
+//        }
+//        postersAdapter = new PostersAdapter(releases, this);
+//
+////        ListPreloader.PreloadSizeProvider sizeProvider = new ViewPreloadSizeProvider();
+////        ListPreloader.PreloadModelProvider modelProvider = new AnimePreloadModelProvider();
+////        RecyclerViewPreloader<Release> preloader = new RecyclerViewPreloader<Release>(GlideApp.with(this), modelProvider, sizeProvider, 6);
+////        view.addOnScrollListener(preloader);
+//
+//
+//        view.setAdapter(postersAdapter);
+////        textView.setText(releases.get(5).getAnime().getTitle());
+////        Glide.with(this).load(new String(posterURL).concat(releases.get(2).getAnime().getPosterURL())).apply(RequestOptions.noTransformation()).into(view);
+//
+//    }
 
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
