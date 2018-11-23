@@ -1,44 +1,19 @@
 package com.example.android.animepal;
 
-import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.ListPreloader;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import com.example.android.animepal.dummy.DummyContent;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity implements ReleaseListFragment.OnListFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements ReleaseListFragment.AnimeSelectedListener, EpisodeFragment.OnListFragmentInteractionListener {
     private RequestManager thumbnailRequest;
     private final int spanCount = 3;
     private OkHttpClient client;
@@ -121,6 +96,18 @@ public class MainActivity extends AppCompatActivity implements ReleaseListFragme
 //
 //    }
 
+    public void animeSelected(Integer id) {
+        EpisodeFragment episodeFragment = new EpisodeFragment();
+        Bundle args = new Bundle();
+        args.putInt(EpisodeFragment.ARG_ID, id);
+        episodeFragment.setArguments(args);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.root, episodeFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    @Override
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
     }

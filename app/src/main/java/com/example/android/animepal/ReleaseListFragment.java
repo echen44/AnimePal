@@ -5,40 +5,25 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-
-import com.bumptech.glide.ListPreloader;
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
-import com.bumptech.glide.request.RequestOptions;
 
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.util.ViewPreloadSizeProvider;
-import com.example.android.animepal.dummy.DummyContent;
-import com.example.android.animepal.dummy.DummyContent.DummyItem;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link AnimeSelectedListener}
  * interface.
  */
 public class ReleaseListFragment extends Fragment implements ReleasesListener{
@@ -47,7 +32,7 @@ public class ReleaseListFragment extends Fragment implements ReleasesListener{
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 3;
-    private OnListFragmentInteractionListener mListener;
+    private AnimeSelectedListener mListener;
     private RequestManager thumbnailRequest;
 //    private RecyclerView view;
     private final String releasesURL = "https://www.masterani.me/api/releases";
@@ -125,11 +110,11 @@ public class ReleaseListFragment extends Fragment implements ReleasesListener{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof AnimeSelectedListener) {
+            mListener = (AnimeSelectedListener) context;
         } else {
                 throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement AnimeSelectedListener");
         }
     }
 
@@ -149,9 +134,9 @@ public class ReleaseListFragment extends Fragment implements ReleasesListener{
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
+    public interface AnimeSelectedListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void animeSelected(Integer id);
     }
 
 //    private void update(String string){
@@ -179,5 +164,9 @@ public class ReleaseListFragment extends Fragment implements ReleasesListener{
         RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
         view.findViewById(R.id.progressBar).setVisibility(View.GONE);
+    }
+
+    public void selectAnime(Integer id) {
+        mListener.animeSelected(id);
     }
 }

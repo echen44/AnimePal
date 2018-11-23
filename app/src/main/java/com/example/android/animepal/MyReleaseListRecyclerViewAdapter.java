@@ -1,6 +1,5 @@
 package com.example.android.animepal;
 
-import android.app.Activity;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -12,25 +11,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.request.RequestOptions;
-import com.example.android.animepal.ReleaseListFragment.OnListFragmentInteractionListener;
 import com.example.android.animepal.dummy.DummyContent.DummyItem;
+//import com.jakewharton.rxbinding3.view.RxView;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+//import kotlin.Unit;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link ReleaseListFragment.AnimeSelectedListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyReleaseListRecyclerViewAdapter extends RecyclerView.Adapter<MyReleaseListRecyclerViewAdapter.PosterViewHolder> {
 
     private ArrayList<Release> releases;
-//    private final OnListFragmentInteractionListener mListener;
-    private Fragment fragment;
+//    private final AnimeSelectedListener mListener;
+    private ReleaseListFragment fragment;
     private final String posterAPI = "https://cdn.masterani.me/poster/1/";
 
-    public MyReleaseListRecyclerViewAdapter(ArrayList<Release> releases, Fragment fragment) {
+    public MyReleaseListRecyclerViewAdapter(ArrayList<Release> releases, ReleaseListFragment fragment) {
         this.releases = releases;
         this.fragment = fragment;
 
@@ -73,8 +75,24 @@ public class MyReleaseListRecyclerViewAdapter extends RecyclerView.Adapter<MyRel
         String posterURL = release.getAnime().getPoster();
 
         name.setText(release.getAnime().getTitle());
-        episode_number.setText("" + release.getEpisode());
+        episode_number.setText(release.getEpisode());
         Log.e("adapter", "onBindViewHolder: loading image");
+//        fragment.selectAnime(release.getAnime().getId());
+//        RxView.clicks(view).subscribe(new Consumer<Unit>() {
+//                                          @Override
+//                                          public void accept(Unit unit) throws Exception {
+//                                              fragment.selectAnime(release.getAnime().getId());
+//                                          }
+//                                      }
+//        );
+        ;
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragment.selectAnime(release.getAnime().getId());
+            }
+        });
+//        GlideApp.with(fragment).load(posterAPI + posterURL).apply(RequestOptions.noTransformation()).override(com.bumptech.glide.request.target.Target.SIZE_ORIGINAL, com.bumptech.glide.request.target.Target.SIZE_ORIGINAL).into(imageView);
         GlideApp.with(fragment).load(posterAPI + posterURL).apply(RequestOptions.noTransformation()).override(com.bumptech.glide.request.target.Target.SIZE_ORIGINAL, com.bumptech.glide.request.target.Target.SIZE_ORIGINAL).into(imageView);
     }
 
