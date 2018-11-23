@@ -2,6 +2,7 @@ package com.example.android.animepal;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +14,12 @@ import android.view.ViewGroup;
 import com.example.android.animepal.dummy.DummyContent;
 import com.example.android.animepal.dummy.DummyContent.DummyItem;
 
+import org.json.JSONArray;
+
 import java.util.List;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 /**
  * A fragment representing a list of Items.
@@ -24,11 +30,17 @@ import java.util.List;
 public class EpisodeFragment extends Fragment {
 
     // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
+    public static final String ARG_COLUMN_COUNT = "column-count";
     final static String ARG_ID = "id";
     // TODO: Customize parameters
     private int mColumnCount = 2;
     private OnListFragmentInteractionListener mListener;
+    private OkHttpClient client;
+    private AnimeDetailsRepository repository;
+    private AnimeDetails animeDetails;
+    private MyEpisodeRecyclerViewAdapter adapter;
+    private ConstraintLayout view;
+    private int id;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -53,7 +65,12 @@ public class EpisodeFragment extends Fragment {
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            id = getArguments().getInt(ARG_ID);
         }
+        client = new OkHttpClient();
+        repository = new AnimeDetailsRepository(client, this);
+        Bundle args = getArguments();
+        repository.getEpisodes(id);
     }
 
     @Override
@@ -62,17 +79,24 @@ public class EpisodeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_episode_list, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyEpisodeRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-        }
-        return view;
+//        if (view instanceof RecyclerView) {
+        Context context = view.getContext();
+        ConstraintLayout constraintLayout = (ConstraintLayout) view;
+        this.view = constraintLayout;
+//            if (mColumnCount <= 1) {
+//                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+//            } else {
+        RecyclerView recyclerView = constraintLayout.findViewById(R.id.list);
+        recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+//            }
+//        while (adapter == null){
+//
+//        }
+//        recyclerView.setAdapter(adapter);
+//        constraintLayout.findViewById(R.id.progressBar).setVisibility(View.GONE);
+
+//        }
+        return constraintLayout;
     }
 
 
@@ -106,5 +130,16 @@ public class EpisodeFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
+    }
+
+    public void callback(AnimeDetails animeDetails) {
+        this.animeDetails = animeDetails;
+//        this.animeDetails.getEpisodes()
+
+        adapter = new MyEpisodeRecyclerViewAdapter(this.animeDetails.getEpisodes(), mListener, this);
+
+        RecyclerView recyclerView = view.findViewById(R.id.list);
+        recyclerView.setAdapter(adapter);
+        view.findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 }

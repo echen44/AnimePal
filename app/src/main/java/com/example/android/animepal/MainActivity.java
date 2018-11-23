@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements ReleaseListFragme
         EpisodeFragment episodeFragment = new EpisodeFragment();
         Bundle args = new Bundle();
         args.putInt(EpisodeFragment.ARG_ID, id);
+        args.putInt(EpisodeFragment.ARG_COLUMN_COUNT, 2);
         episodeFragment.setArguments(args);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.root, episodeFragment);
