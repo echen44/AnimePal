@@ -2,6 +2,7 @@ package com.example.android.animepal;
 
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,15 @@ import android.widget.TextView;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.android.animepal.EpisodeFragment.OnListFragmentInteractionListener;
 import com.example.android.animepal.dummy.DummyContent.DummyItem;
+import com.jakewharton.rxbinding3.view.RxView;
 
+import java.net.URL;
 import java.util.List;
+import java.util.Observable;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.internal.observers.DisposableLambdaObserver;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
@@ -26,11 +34,13 @@ public class MyEpisodeRecyclerViewAdapter extends RecyclerView.Adapter<MyEpisode
     private EpisodeFragment fragment;
 //    https://cdn.masterani.me/episodes/48837U0HqMTm9.jpg
     private final String THUMBNAILS_URL = "https://cdn.masterani.me/episodes/";
+    private String slug;
 
-    public MyEpisodeRecyclerViewAdapter(List<Episode> items, OnListFragmentInteractionListener listener, EpisodeFragment fragment) {
+    public MyEpisodeRecyclerViewAdapter(List<Episode> items, OnListFragmentInteractionListener listener, EpisodeFragment fragment, String slug) {
         episodes = items;
         mListener = listener;
         this.fragment = fragment;
+        this.slug = slug;
     }
 
     @Override
@@ -47,8 +57,24 @@ public class MyEpisodeRecyclerViewAdapter extends RecyclerView.Adapter<MyEpisode
         ConstraintLayout view = holder.anime_episode;
         holder.number.setText(episodeInfo.getEpisode());
         holder.title.setText((String) episodeInfo.getTitle());
-        GlideApp.with(fragment).load(THUMBNAILS_URL + episode.getThumbnail()).apply(RequestOptions.noTransformation()).override(com.bumptech.glide.request.target.Target.SIZE_ORIGINAL, com.bumptech.glide.request.target.Target.SIZE_ORIGINAL).into(holder.imageView);
 
+
+//        String string = "https://www.masterani.me/anime/watch/" + slug + "/" + episode.getInfo().getEpisode();
+        String string = "https://www.masterani.me/anime/watch/2296-pokemon-sun-moon/100";
+//        LinkScraper.scrape(string);
+//        Observable<List<Mirror>> mirrorObservable = RxView.clicks(view);
+        RxView.clicks(view)
+//                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(aVoid -> Log.e("dog", LinkScraper.scrape(string).get(0).getEmbedId()));
+//        Log.e("dog", );
+        GlideApp.with(fragment).load(THUMBNAILS_URL + episode.getThumbnail()).apply(RequestOptions.noTransformation()).override(com.bumptech.glide.request.target.Target.SIZE_ORIGINAL, com.bumptech.glide.request.target.Target.SIZE_ORIGINAL).into(holder.imageView);
+//        holder.anime_episode.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

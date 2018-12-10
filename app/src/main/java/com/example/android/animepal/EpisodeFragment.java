@@ -136,7 +136,7 @@ public class EpisodeFragment extends Fragment {
         this.animeDetails = animeDetails;
 //        this.animeDetails.getEpisodes()
 
-        adapter = new MyEpisodeRecyclerViewAdapter(this.animeDetails.getEpisodes(), mListener, this);
+        adapter = new MyEpisodeRecyclerViewAdapter(this.animeDetails.getEpisodes(), mListener, this, animeDetails.getInfo().getSlug());
 
         RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
