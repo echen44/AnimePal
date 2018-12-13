@@ -73,4 +73,8 @@ public class Mirror {
         this.host = host;
     }
 
+    @Override
+    public String toString() {
+        return host.getName() + " " + quality.toString();
+    }
 }

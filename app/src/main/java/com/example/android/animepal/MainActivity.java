@@ -5,15 +5,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.bumptech.glide.RequestManager;
 import com.example.android.animepal.dummy.DummyContent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 
-public class MainActivity extends AppCompatActivity implements ReleaseListFragment.AnimeSelectedListener, EpisodeFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements ReleaseListFragment.AnimeSelectedListener, EpisodeFragment.OnListFragmentInteractionListener, MirrorSelectDialogFragment.OnFragmentInteractionListener {
     private RequestManager thumbnailRequest;
     private final int spanCount = 3;
     private OkHttpClient client;
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements ReleaseListFragme
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-
+    public void MirrorSelected(Mirror mirror) {
+        Log.e("cat", mirror.toString());
     }
 }

@@ -1,15 +1,23 @@
 package com.example.android.animepal;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.example.android.animepal.dummy.DummyContent;
 import com.example.android.animepal.dummy.DummyContent.DummyItem;
@@ -27,7 +35,7 @@ import okhttp3.Request;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class EpisodeFragment extends Fragment {
+public class EpisodeFragment extends Fragment implements MirrorSelectDialogFragment.OnFragmentInteractionListener{
 
     // TODO: Customize parameter argument names
     public static final String ARG_COLUMN_COUNT = "column-count";
@@ -41,6 +49,7 @@ public class EpisodeFragment extends Fragment {
     private MyEpisodeRecyclerViewAdapter adapter;
     private ConstraintLayout view;
     private int id;
+    private List<Mirror> mirrors;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -117,6 +126,19 @@ public class EpisodeFragment extends Fragment {
         mListener = null;
     }
 
+    public void showMirrors(DialogFragment dialogFragment) {
+        dialogFragment.show(getFragmentManager(), "mirrors");
+    }
+
+    @Override
+    public void MirrorSelected(Mirror mirror) {
+        Log.e("cat", mirror.toString());
+    }
+
+    //    public void showMirrors(List<Mirror> mirrors) {
+////        this.mirrors = mirrors;
+//    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -129,7 +151,7 @@ public class EpisodeFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void MirrorSelected(Mirror mirror);
     }
 
     public void callback(AnimeDetails animeDetails) {

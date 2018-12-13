@@ -1,6 +1,7 @@
 package com.example.android.animepal;
 
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,8 +20,10 @@ import java.util.List;
 import java.util.Observable;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
 import io.reactivex.internal.observers.DisposableLambdaObserver;
 import io.reactivex.schedulers.Schedulers;
+import kotlin.Unit;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
@@ -64,9 +67,24 @@ public class MyEpisodeRecyclerViewAdapter extends RecyclerView.Adapter<MyEpisode
 //        LinkScraper.scrape(string);
 //        Observable<List<Mirror>> mirrorObservable = RxView.clicks(view);
         RxView.clicks(view)
-//                .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(aVoid -> Log.e("dog", LinkScraper.scrape(string).get(0).getEmbedId()));
+                .map(new Function<Object, List<Mirror>>() {
+                    @Override
+                    public List<Mirror> apply(Object o) throws Exception {
+                        return LinkScraper.scrape(string);
+                    }
+                })
+                .map(new Function<List<Mirror>, DialogFragment>() {
+                    @Override
+                    public DialogFragment apply(List<Mirror> mirrors) throws Exception {
+//                        return MirrorSelectDialogFragment.newInstance(mirrors);
+                        MirrorSelectDialogFragment dialogFragment = new MirrorSelectDialogFragment();
+                        dialogFragment.setMirrors(mirrors);
+                        return dialogFragment;
+                    }
+                })
+//                .subscribeOn(Schedulers.io())
+                .subscribe(f -> fragment.showMirrors(f));
 //        Log.e("dog", );
         GlideApp.with(fragment).load(THUMBNAILS_URL + episode.getThumbnail()).apply(RequestOptions.noTransformation()).override(com.bumptech.glide.request.target.Target.SIZE_ORIGINAL, com.bumptech.glide.request.target.Target.SIZE_ORIGINAL).into(holder.imageView);
 //        holder.anime_episode.setOnClickListener(new View.OnClickListener() {
