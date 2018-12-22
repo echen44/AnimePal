@@ -77,4 +77,12 @@ public class Mirror {
     public String toString() {
         return host.getName() + " " + quality.toString();
     }
+
+    public String getEmbedURL() {
+        String URL = host.getEmbedPrefix() + embedId;
+        if (host.getEmbedSuffix() != null) {
+            URL = URL + host.getEmbedSuffix();
+        }
+        return URL;
+    }
 }

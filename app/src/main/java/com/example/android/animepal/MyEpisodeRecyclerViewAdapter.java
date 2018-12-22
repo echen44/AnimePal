@@ -62,8 +62,8 @@ public class MyEpisodeRecyclerViewAdapter extends RecyclerView.Adapter<MyEpisode
         holder.title.setText((String) episodeInfo.getTitle());
 
 
-//        String string = "https://www.masterani.me/anime/watch/" + slug + "/" + episode.getInfo().getEpisode();
-        String string = "https://www.masterani.me/anime/watch/2296-pokemon-sun-moon/100";
+        String string = "https://www.masterani.me/anime/watch/" + slug + "/" + episode.getInfo().getEpisode();
+//        String string = "https://www.masterani.me/anime/watch/2296-pokemon-sun-moon/100";
 //        LinkScraper.scrape(string);
 //        Observable<List<Mirror>> mirrorObservable = RxView.clicks(view);
         RxView.clicks(view)
