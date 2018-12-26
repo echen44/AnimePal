@@ -1,20 +1,29 @@
 package com.example.android.animepal;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
-import com.bumptech.glide.RequestManager;
+import com.example.android.animepal.dummy.DummyContent;
+import com.example.android.animepal.dummy.DummyContent.DummyItem;
 
 import org.json.JSONArray;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -23,37 +32,36 @@ import okhttp3.Request;
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link AnimeSelectedListener}
+ * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ReleaseListFragment extends Fragment implements ReleasesListener{
+public class EpisodeFragment extends Fragment implements MirrorSelectDialogFragment.OnFragmentInteractionListener{
 
     // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
+    public static final String ARG_COLUMN_COUNT = "column-count";
+    final static String ARG_ID = "id";
     // TODO: Customize parameters
-    private int mColumnCount = 3;
-    private AnimeSelectedListener mListener;
-    private RequestManager thumbnailRequest;
-//    private RecyclerView view;
-    private final String releasesURL = "https://www.masterani.me/api/releases";
+    private int mColumnCount = 2;
+    private OnListFragmentInteractionListener mListener;
     private OkHttpClient client;
-    private ArrayList<Release> releases;
-    private String TAG = "ReleaseListFragment";
-    private MyReleaseListRecyclerViewAdapter adapter;
+    private AnimeDetailsRepository repository;
+    private AnimeDetails animeDetails;
+    private MyEpisodeRecyclerViewAdapter adapter;
     private ConstraintLayout view;
-    private ReleasesRepository repository;
+    private int id;
+    private List<Mirror> mirrors;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ReleaseListFragment() {
+    public EpisodeFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ReleaseListFragment newInstance(int columnCount) {
-        ReleaseListFragment fragment = new ReleaseListFragment();
+    public static EpisodeFragment newInstance(int columnCount) {
+        EpisodeFragment fragment = new EpisodeFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -66,24 +74,18 @@ public class ReleaseListFragment extends Fragment implements ReleasesListener{
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            id = getArguments().getInt(ARG_ID);
         }
-
-        thumbnailRequest = GlideApp.with(this);
-
-//        api request, get EVERYTHING
-        final Request request = new Request.Builder().url(releasesURL).build();
-        JSONArray jsonArray;
         client = new OkHttpClient();
-        repository = new ReleasesRepository(client, this);
-        repository.getReleases(this);
-
-//        try {
+        repository = new AnimeDetailsRepository(client, this);
+        Bundle args = getArguments();
+        repository.getEpisodes(id);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_releaselist_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_episode_list, container, false);
 
         // Set the adapter
 //        if (view instanceof RecyclerView) {
@@ -110,10 +112,10 @@ public class ReleaseListFragment extends Fragment implements ReleasesListener{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof AnimeSelectedListener) {
-            mListener = (AnimeSelectedListener) context;
+        if (context instanceof OnListFragmentInteractionListener) {
+            mListener = (OnListFragmentInteractionListener) context;
         } else {
-                throw new RuntimeException(context.toString()
+            throw new RuntimeException(context.toString()
                     + " must implement AnimeSelectedListener");
         }
     }
@@ -123,6 +125,19 @@ public class ReleaseListFragment extends Fragment implements ReleasesListener{
         super.onDetach();
         mListener = null;
     }
+
+    public void showMirrors(DialogFragment dialogFragment) {
+        dialogFragment.show(getFragmentManager(), "mirrors");
+    }
+
+    @Override
+    public void MirrorSelected(Mirror mirror) {
+        Log.e("cat", mirror.toString());
+    }
+
+    //    public void showMirrors(List<Mirror> mirrors) {
+////        this.mirrors = mirrors;
+//    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -134,39 +149,19 @@ public class ReleaseListFragment extends Fragment implements ReleasesListener{
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface AnimeSelectedListener {
+    public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void animeSelected(Integer id);
+        void MirrorSelected(Mirror mirror);
     }
 
-//    private void update(String string){
-//        try{
-//            Log.e(TAG, string);
-//            releases = Release.parseResponse(string);
-//        }
-//        catch (JSONException e){
-//            Log.e(TAG, "error update");
-//        }
-//        adapter = new MyReleaseListRecyclerViewAdapter(releases, this);
-//
-//
-////        view.setAdapter(postersAdapter);
-////        textView.setText(releases.get(5).getAnime().getTitle());
-////        Glide.with(this).load(new String(posterURL).concat(releases.get(2).getAnime().getPosterURL())).apply(RequestOptions.noTransformation()).into(view);
-//
-//    }
+    public void callback(AnimeDetails animeDetails) {
+        this.animeDetails = animeDetails;
+//        this.animeDetails.getEpisodes()
 
-    @Override
-    public void callback(List<Release> releases) {
-        this.releases = (ArrayList<Release>) releases;
-        adapter = new MyReleaseListRecyclerViewAdapter(this.releases, this);
+        adapter = new MyEpisodeRecyclerViewAdapter(this.animeDetails.getEpisodes(), mListener, this, animeDetails.getInfo().getSlug());
 
         RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
         view.findViewById(R.id.progressBar).setVisibility(View.GONE);
-    }
-
-    public void selectAnime(Integer id) {
-        mListener.animeSelected(id);
     }
 }
