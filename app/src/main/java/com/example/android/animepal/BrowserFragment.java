@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -37,7 +38,7 @@ public class BrowserFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
+//     * @param param1 Parameter 1.
      * @return A new instance of fragment BrowserFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -63,6 +64,9 @@ public class BrowserFragment extends Fragment {
         // Inflate the layout for this fragment
         WebView webView = (WebView) inflater.inflate(R.layout.fragment_browser, container, false);
         webView.getSettings().setJavaScriptEnabled(true);
+//        webView.setWebChromeClient(new AdblockWebChromeClient());
+        webView.setWebViewClient(new LinkInterceptorWebViewClient(this));
+        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         webView.loadUrl(URL);
         return webView;
     }

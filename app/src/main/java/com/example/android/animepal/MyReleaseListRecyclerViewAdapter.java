@@ -76,7 +76,6 @@ public class MyReleaseListRecyclerViewAdapter extends RecyclerView.Adapter<MyRel
 
         name.setText(release.getAnime().getTitle());
         episode_number.setText(release.getEpisode());
-        Log.e("adapter", "onBindViewHolder: loading image");
 //        fragment.selectAnime(release.getAnime().getId());
 //        RxView.clicks(view).subscribe(new Consumer<Unit>() {
 //                                          @Override
